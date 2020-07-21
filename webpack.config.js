@@ -4,8 +4,10 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 let webpackConfig = {
+    mode: 'development',
     entry: {
-        voronoimap: './src/visualizations/voronoimap.ts'
+        voronoimap: './src/visualizations/voronoimap.ts',
+        sparkline: './src/visualizations/sparkline.js'
     },
     output: {
         filename: '[name].js',
@@ -38,7 +40,7 @@ let webpackConfig = {
         ],
     },
     devServer: {
-        host: 'jim.looker.com',
+        host: 'colin.looker.com',
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': '*',

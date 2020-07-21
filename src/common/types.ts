@@ -1,24 +1,24 @@
 // API Globals
 export interface Looker {
     plugins: {
-        visualizations: {
-            add: (visualization: VisualizationDefinition) => void
-        }
+      visualizations: {
+        add: (visualization: VisualizationDefinition) => void
+      }
     }
-}
-
-export interface LookerChartUtils {
+  }
+  
+  export interface LookerChartUtils {
     Utils: {
-        openDrillMenu: (options: { links: Link[], event: object }) => void
-        openUrl: (url: string, event: object) => void
-        textForCell: (cell: Cell) => string
-        filterableValueForCell: (cell: Cell) => string
-        htmlForCell: (cell: Cell, context?: string, fieldDefinitionForCell?: any, customHtml?: string) => string
+      openDrillMenu: (options: { links: Link[], event: object }) => void
+      openUrl: (url: string, event: object) => void
+      textForCell: (cell: Cell) => string
+      filterableValueForCell: (cell: Cell) => string
+      htmlForCell: (cell: Cell, context?: string, fieldDefinitionForCell?: any, customHtml?: string) => string
     }
-}
-
-// Looker visualization types
-export interface VisualizationDefinition {
+  }
+  
+  // Looker visualization types
+  export interface VisualizationDefinition {
     id?: string
     label?: string
     options: VisOptions
@@ -29,75 +29,75 @@ export interface VisualizationDefinition {
     update?: (data: VisData, element: HTMLElement, config: VisConfig, queryResponse: VisQueryResponse, details?: VisUpdateDetails) => void
     updateAsync?: (data: VisData, element: HTMLElement, config: VisConfig, queryResponse: VisQueryResponse, details: VisUpdateDetails | undefined, updateComplete: () => void) => void
     destroy?: () => void
-}
-
-export interface VisOptions { [optionName: string]: VisOption }
-
-export interface VisOptionValue { [label: string]: string }
-
-export interface VisQueryResponse {
+  }
+  
+  export interface VisOptions { [optionName: string]: VisOption }
+  
+  export interface VisOptionValue { [label: string]: string }
+  
+  export interface VisQueryResponse {
     [key: string]: any
     data: VisData
     fields: {
-        [key: string]: any[]
+      [key: string]: any[]
     }
     pivots: Pivot[]
-}
-
-export interface Pivot {
+  }
+  
+  export interface Pivot {
     key: string
     is_total: boolean
     data: { [key: string]: string }
     metadata: { [key: string]: { [key: string]: string } }
-}
-
-export interface Link {
+  }
+  
+  export interface Link {
     label: string
     type: string
     type_label: string
     url: string
-}
-
-export interface Cell {
+  }
+  
+  export interface Cell {
     [key: string]: any
     value: any
     rendered?: string
     html?: string
     links?: Link[]
-}
-
-export interface FilterData {
+  }
+  
+  export interface FilterData {
     add: string
     field: string
     rendered: string
-}
-
-export interface PivotCell {
+  }
+  
+  export interface PivotCell {
     [pivotKey: string]: Cell
-}
-
-export interface Row {
+  }
+  
+  export interface Row {
     [fieldName: string]: PivotCell | Cell
-}
-
-export type VisData = Row[]
-
-export interface VisConfig {
+  }
+  
+  export type VisData = Row[]
+  
+  export interface VisConfig {
     [key: string]: VisConfigValue
-}
-
-export type VisConfigValue = any
-
-export interface VisUpdateDetails {
+  }
+  
+  export type VisConfigValue = any
+  
+  export interface VisUpdateDetails {
     changed: {
-        config?: string[]
-        data?: boolean
-        queryResponse?: boolean
-        size?: boolean
+      config?: string[]
+      data?: boolean
+      queryResponse?: boolean
+      size?: boolean
     }
-}
-
-export interface VisOption {
+  }
+  
+  export interface VisOption {
     type: string,
     values?: VisOptionValue[],
     display?: string,
@@ -111,12 +111,14 @@ export interface VisOption {
     max?: number
     step?: number
     required?: boolean
-}
-
-export interface VisualizationError {
+    supports?: string[]
+  }
+  
+  export interface VisualizationError {
     group?: string
     message?: string
     title?: string
     retryable?: boolean
     warning?: boolean
-}
+  }
+  
