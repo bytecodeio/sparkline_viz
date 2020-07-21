@@ -33,10 +33,10 @@ looker.plugins.visualizations.add({
       var firstCell = firstRow[queryResponse.fields.dimensions[0].name];
   
       var returnString = `<div class='embed-folder-vis'>`
-      data.forEach((x) =>  {
-          returnString = returnString + `<div style='margin:16px; line-height: 38px; font-family:"Open Sans", "Noto Sans JP", "Noto Sans", "Noto Sans CJK KR", Helvetica, Arial, sans-serif;'> ${x['spaces.name_button'].html} </div>`
-      })
-      
+      // data.forEach((x) =>  {
+      //     returnString = returnString + `<div style='margin:16px; line-height: 38px; font-family:"Open Sans", "Noto Sans JP", "Noto Sans", "Noto Sans CJK KR", Helvetica, Arial, sans-serif;'> ${x['spaces.name_button'].html} </div>`
+      // })
+      returnString = returnString + firstCell;
       returnString = returnString + `</div>`
   
       // Insert the data into the page.
