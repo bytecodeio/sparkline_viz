@@ -3,17 +3,17 @@ import sparkline from "@fnando/sparkline";
 export const viz = looker.plugins.visualizations.add({
     options: {
         width: {
-          label: "Width",
-          section: "Layout",
+          label: "Width (px)",
+          section: "Sparkline",
           type: "number",
           default: "300"
         },
-        // height: {
-        //     label: "Height",
-        //     section: "Layout",
-        //     type: "number",
-        //     default: "100"  
-        // },
+        height: {
+            label: "Height",
+            section: "Sparkline",
+            type: "number",
+            default: "100"  
+        },
         // headerOffset: {
         //     label: "Header Offset",
         //     section: "Layout",
@@ -40,7 +40,7 @@ export const viz = looker.plugins.visualizations.add({
             display: "color"
         },
         top_label: {
-          section: "Layout",
+          section: "Header",
           type: "string",
           label: "Label (for top)",
           placeholder: "My Great Chart"
@@ -51,16 +51,14 @@ export const viz = looker.plugins.visualizations.add({
 	},
 	updateAsync: function(data, element, config, queryResponse, details, doneRendering){
         
-        const height1 = element.offsetHeight;
+        // const available_height = element.offsetHeight;
 
-
-        // if (height1 != config.height) {
-        //     this.trigger("updateConfig", [{height: height1}])
+        // if (available_height != config.height) {
+        //     this.trigger("updateConfig", [{height: available_height}])
         // }
-
         
-        // Create an option for each measure in your query
-        let values = queryResponse.fields.measures.map((field) => {
+        // Create an option for choosing the measures for sparkline and single values
+        let values = queryResponse.fields.measure_like.map((field) => {
             let key =    field.label
             let value =  field.name
             return {[key]: value}
@@ -85,33 +83,24 @@ export const viz = looker.plugins.visualizations.add({
         if (config.sparklineData == null) {
             this.trigger('registerOptions', options) // register options with parent page to update visConfig
         }
-
         
-        // let options = this.options
-        // Create an option for each measure in your query
-        // queryResponse.fields.measure_like.forEach(function(field) {
-        //   let id = "color_" + field.name
-        //   options[id] =
-        //   {
-        // label: "Based on " +field.label_short,
-        // default: "no",
-        // section: "Style",
-        // type: "string",
-        // display: "color"
+        // var header = LookerCharts.Utils.textForCell(data[0][config.headerData])
+        // var header = JSON.stringify(data[0][config.sparklineData].value)
+        // if (config.sparklineData.fields.dimensions.length == 0) {
+        //     this.addError({title: "No Dimensions", message: "This chart requires dimensions."});
+        //     return;
         //   }
-        // })
-        // this.trigger('registerOptions', options) // register options with parent page to update visConfig
+      
+        // Grab the first cell of the data
+        var firstRow = data[0];
+        var firstCell = firstRow[config.headerData];
+        var header = LookerCharts.Utils.htmlForCell(firstCell);
 
-        element.innerHTML = `<h1 class="sparklineTitle"><center>${config.top_label}${JSON.stringify(options)}</center></h1>`+
-        `<center><svg class="sparkline" width="${config.width}" height="${height1}" stroke-width="${config.strokeWidth}"`+
-        ` stroke="${config.stroke}"  fill="${config.fill}"></svg></center>`;
+        element.innerHTML = `<div style="line-height: 0.4;font-family: Verdana, Geneva, sans-serif;"><h3 class="sparklineTitle">${config.top_label}</h3>`+
+            `<h1 styles={z-index: 10}>${header}</h1></div>`+
+            `<svg class="sparkline" width="${config.width}" height="${config.height}" stroke-width="${config.strokeWidth}"`+
+            ` stroke="${config.stroke}"  fill="${config.fill}"></svg>`;
         
-        // values: [
-        //     {"Center": "c"},
-        //     {"Left": "l"},
-        //     {"Right": "r"}
-        // ]
-       
         var dataArray = [];
         for(var row of data) {
             	var cell = row[config.sparklineData];
