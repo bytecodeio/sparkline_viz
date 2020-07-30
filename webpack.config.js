@@ -1,12 +1,10 @@
 let path = require('path');
 
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 let webpackConfig = {
     mode: 'development',
     entry: {
-        voronoimap: './src/visualizations/voronoimap.ts',
         sparkline: './src/visualizations/sparkline.js'
     },
     output: {
@@ -20,11 +18,6 @@ let webpackConfig = {
     },
     plugins: [
         new UglifyJSPlugin(),
-        new CopyWebpackPlugin([
-            { from: 'src/visualizations/us_geo.json' },
-            { from: 'src/visualizations/airports.csv' },
-            { from: 'src/visualizations/flights.csv' },
-        ])
     ],
     module: {
         rules: [
