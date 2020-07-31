@@ -113,7 +113,7 @@ export const viz = looker.plugins.visualizations.add({
         var header = LookerCharts.Utils.htmlForCell(firstCell);
 
         element.innerHTML = `<div class="headerdiv" style="font-family: Montserrat;height: 36px; font-style: normal; font-weight: normal; font-size: 16px;">${config.top_label}`+
-            `<div style="font-size: 24px;">${header}</div></div>`+
+            `<div style="font-size: 24px; font-weight: bolder;">${header}</div></div>`+
             `<svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 16}" stroke-width="${config.strokeWidth}"`+
             ` stroke="${config.stroke}"  fill="${config.fill}"></svg>`;
         
