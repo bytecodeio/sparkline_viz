@@ -1,5 +1,41 @@
 import sparkline from "@fnando/sparkline";
 
+function findClosest(target, tagName) {
+    if (target.tagName === tagName) {
+      return target;
+    }
+  
+    while ((target = target.parentNode)) {
+      if (target.tagName === tagName) {
+        break;
+      }
+    }
+  
+    return target;
+  }
+
+var sparkline_options = {
+    onmousemove(event, datapoint) {
+      var svg = findClosest(event.target, "svg");
+      var tooltip = svg.nextElementSibling;
+      var date = (new Date(datapoint.date)).toUTCString().replace(/^.*?, (.*?) \d{2}:\d{2}:\d{2}.*?$/, "$1");
+  
+  
+      tooltip.hidden = false;
+      tooltip.textContent = `${date}: $${datapoint.value.toFixed(2)} USD`;
+      tooltip.style.top = `${event.offsetY}px`;
+      tooltip.style.left = `${event.offsetX + 20}px`;
+    },
+  
+    onmouseout() {
+      var svg = findClosest(event.target, "svg");
+      var tooltip = svg.nextElementSibling;
+  
+      tooltip.hidden = true;
+    }
+  };
+  
+
 export const viz = looker.plugins.visualizations.add({
     options: {
         // width: {
@@ -118,14 +154,30 @@ export const viz = looker.plugins.visualizations.add({
             	var cell = row[config.sparklineData];
                 dataArray.push(parseFloat(LookerCharts.Utils.textForCell(cell).replace(/\D/g,'')));
          }
-       
-         element.innerHTML = `<div class="headerdiv" style="font-family: Montserrat;height: 36px; font-style: normal; font-weight: normal; font-size: 16px;">${config.top_label}`+
-         `<div style="font-size: 24px; font-weight: bolder;">${header}</div></div>`+
-         `<svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 16}" stroke-width="${config.strokeWidth}"`+
-         ` stroke="${config.stroke}"  fill="${config.fill}"></svg>`;
+
+        //  Montserrat:
+        //  https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2);}'+
+
+         
+        var styleEl = document.createElement('style');
+        styleEl.setAttribute('type',"text/css")
+        styleEl.innerHTML = '@font-face '+
+          '{font-family: Open Sans;'+
+            'src: url( https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFVZ0b.woff2 );}'+
+          'div {font-family: Open Sans;};'
+
+
+         document.head.appendChild(styleEl);
+         element.innerHTML = `
+         
+         <div class="headerdiv" style="height: 36px; font-style: normal; font-weight: 300; font-size: 16px;">
+         ${config.top_label}
+         <div style="font-size: 24px; font-weight: bolder;">${header}</div></div>
+         <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 16}" stroke-width="${config.strokeWidth}"
+          stroke="${config.stroke}"  fill="${config.fill}"></svg>`;
     
        
-         sparkline(document.querySelector(".sparkline"), dataArray);
+         sparkline(document.querySelector(".sparkline"), dataArray, sparkline_options);
 		doneRendering()
 	}
 });
