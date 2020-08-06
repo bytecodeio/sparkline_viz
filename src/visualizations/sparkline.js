@@ -38,25 +38,7 @@ var sparkline_options = {
 
 export const viz = looker.plugins.visualizations.add({
     options: {
-        // width: {
-        //   label: "Width (px)",
-        //   section: "Sparkline",
-        //   type: "number",
-        //   default: "300"
-        // },
-        // height: {
-        //     label: "Height",
-        //     section: "Sparkline",
-        //     type: "number",
-        //     default: "100"  
-        // },
-        // headerOffset: {
-        //     label: "Header Offset",
-        //     section: "Layout",
-        //     type: "number",
-        //     default: "100"  
-        // },
-        stroke: {
+          stroke: {
           section: "Sparkline",
           type: "array",
           label: "Stroke color",
@@ -82,34 +64,11 @@ export const viz = looker.plugins.visualizations.add({
           placeholder: "My Great Chart"
         }
     },
-    // setHeightAndWidth: function(element, config){
-    //      // Sorry, this '46' is just a magic number for accounting for the height of the text in the div.
-    //      const available_height = element.offsetHeight - 46;
-    //      if (available_height != config.height) {
-    //          this.trigger("updateConfig", [{height: available_height}])
-    //      }
-         
-    //      const available_width = element.offsetWidth;
-    //      if (available_width != config.height) {
-    //          this.trigger("updateConfig", [{width: available_width}])
-    //      }
-    // },
 	create: function(element, config){
 		element.innerHTML = `<svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 37}" stroke-width="3"></svg>`;
     },
 	updateAsync: function(data, element, config, queryResponse, details, doneRendering){
         
-        // const available_height = element.offsetHeight - 46;
-        // if (available_height != config.height) {
-        //     this.trigger("updateConfig", [{height: available_height}])
-        // }
-        
-        // const available_width = element.offsetWidth;
-        // if (available_width != config.height) {
-        //     this.trigger("updateConfig", [{width: available_width}])
-        // }
-
-        // Create an option for choosing the measures for sparkline and single values
         let values = queryResponse.fields.measure_like.map((field) => {
             let key =    field.label
             let value =  field.name
@@ -136,18 +95,11 @@ export const viz = looker.plugins.visualizations.add({
             this.trigger('registerOptions', options) // register options with parent page to update visConfig
         }
         
-        // var header = LookerCharts.Utils.textForCell(data[0][config.headerData])
-        // var header = JSON.stringify(data[0][config.sparklineData].value)
-        // if (config.sparklineData.fields.dimensions.length == 0) {
-        //     this.addError({title: "No Dimensions", message: "This chart requires dimensions."});
-        //     return;
-        //   }
-      
+    
         // Grab the first cell of the data
         var firstRow = data[0];
         var firstCell = firstRow[config.headerData];
         var header = LookerCharts.Utils.htmlForCell(firstCell);
-
         
         var dataArray = [];
         for(var row of data) {
@@ -157,7 +109,6 @@ export const viz = looker.plugins.visualizations.add({
 
         //  Montserrat:
         //  https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2);}'+
-
          
         var styleEl = document.createElement('style');
         styleEl.setAttribute('type',"text/css")
