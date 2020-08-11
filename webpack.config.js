@@ -3,7 +3,7 @@ let path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 let webpackConfig = {
-    mode: 'development',
+    mode: 'production',
     entry: {
         sparkline: './src/visualizations/sparkline.js'
     },

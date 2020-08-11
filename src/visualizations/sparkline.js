@@ -1,13 +1,14 @@
 import sparkline from "@fnando/sparkline";
 
 function findClosest(target, tagName) {
-    if (target.tagName === tagName) {
+   
+  if (target.tagName === tagName) {
       return target;
     }
   
     while ((target = target.parentNode)) {
       if (target.tagName === tagName) {
-        break;
+        return target;
       }
     }
   
@@ -17,20 +18,20 @@ function findClosest(target, tagName) {
 var sparkline_options = {
     onmousemove(event, datapoint) {
       var svg = findClosest(event.target, "svg");
+      
       var tooltip = svg.nextElementSibling;
       var date = (new Date(datapoint.date)).toUTCString().replace(/^.*?, (.*?) \d{2}:\d{2}:\d{2}.*?$/, "$1");
   
-  
+        
       tooltip.hidden = false;
-      tooltip.textContent = `${date}: $${datapoint.value.toFixed(2)} USD`;
-      tooltip.style.top = `${event.offsetY}px`;
-      tooltip.style.left = `${event.offsetX + 20}px`;
+      tooltip.textContent = `${date}: ${datapoint.value.toFixed(2)}`;
+      tooltip.style.top = `${event.offsetY + 35}px`;
+      tooltip.style.left = `${event.offsetX - 20}px`;
     },
   
     onmouseout() {
       var svg = findClosest(event.target, "svg");
       var tooltip = svg.nextElementSibling;
-  
       tooltip.hidden = true;
     }
   };
@@ -74,6 +75,7 @@ export const viz = looker.plugins.visualizations.add({
             let value =  field.name
             return {[key]: value}
         })
+        let firstDimension = queryResponse.fields.dimensions[0].name;
         let options = this.options;
         options["sparklineData"] =
         {
@@ -103,8 +105,13 @@ export const viz = looker.plugins.visualizations.add({
         
         var dataArray = [];
         for(var row of data) {
-            	var cell = row[config.sparklineData];
-                dataArray.push(parseFloat(LookerCharts.Utils.textForCell(cell).replace(/\D/g,'')));
+              var measureCell = row[config.sparklineData];
+              var dateCell = row[firstDimension];
+                dataArray.push({
+                  "name": config.top_label,
+                  "value": parseFloat(LookerCharts.Utils.textForCell(measureCell).replace(/\D/g,'')),
+                  "date": LookerCharts.Utils.textForCell(dateCell)
+              });
          }
 
         //  Montserrat:
@@ -121,11 +128,19 @@ export const viz = looker.plugins.visualizations.add({
          document.head.appendChild(styleEl);
          element.innerHTML = `
          
-         <div class="headerdiv" style="height: 36px; font-style: normal; font-weight: 300; font-size: 16px;">
+         <div class="headerdiv" style="height: 52px; font-style: normal; font-weight: 300; font-size: 16px;">
          ${config.top_label}
          <div style="font-size: 24px; font-weight: bolder;">${header}</div></div>
-         <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 16}" stroke-width="${config.strokeWidth}"
-          stroke="${config.stroke}"  fill="${config.fill}"></svg>`;
+         <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 32}" stroke-width="${config.strokeWidth}"
+          stroke="${config.stroke}"  fill="${config.fill}"></svg>
+          <span class="tooltip" style="position: absolute; 
+            background: rgba(0, 0, 0, .7);
+            color: #fff;
+            padding: 2px 5px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 9999;
+          }" hidden="true"></span>`;
     
        
          sparkline(document.querySelector(".sparkline"), dataArray, sparkline_options);
