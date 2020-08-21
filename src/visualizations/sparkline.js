@@ -24,7 +24,7 @@ var sparkline_options = {
   
         
       tooltip.hidden = false;
-      tooltip.textContent = `${date}: ${datapoint.value.toFixed(2)}`;
+      tooltip.textContent = `${date}: ${datapoint.html}`;
       tooltip.style.top = `${event.offsetY + 35}px`;
       tooltip.style.left = `${event.offsetX - 20}px`;
     },
@@ -109,8 +109,9 @@ export const viz = looker.plugins.visualizations.add({
               var dateCell = row[firstDimension];
                 dataArray.push({
                   "name": config.top_label,
-                  "value": parseFloat(LookerCharts.Utils.textForCell(measureCell).replace(/\D/g,'')),
-                  "date": LookerCharts.Utils.textForCell(dateCell)
+                  "value": parseFloat(LookerCharts.Utils.textForCell(measureCell).replace(/[^0-9.]/g,'')),
+                  "date": LookerCharts.Utils.textForCell(dateCell),
+                  "html": LookerCharts.Utils.textForCell(measureCell)
               });
          }
 
