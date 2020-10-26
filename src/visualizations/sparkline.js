@@ -63,6 +63,11 @@ export const viz = looker.plugins.visualizations.add({
           type: "string",
           label: "Label (for top)",
           placeholder: "My Great Chart"
+        },
+        last: {
+          section: "Header",
+          type: "boolean",
+          label: "Use the last value?"
         }
     },
 	create: function(element, config){
@@ -93,15 +98,17 @@ export const viz = looker.plugins.visualizations.add({
             display: "select",
             values: values,
         }
+      
+        
         if (config.sparklineData == null) {
             this.trigger('registerOptions', options) // register options with parent page to update visConfig
         }
         
     
-        // Grab the first cell of the data
-        var firstRow = data[0];
-        var firstCell = firstRow[config.headerData];
-        var header = LookerCharts.Utils.htmlForCell(firstCell);
+        // Grab the header cell
+        var headerRow = config.last ? data[data.length-1] : data[0];
+        var headerCell = headerRow[config.headerData];
+        var header = LookerCharts.Utils.htmlForCell(headerCell);
         
         var dataArray = [];
         for(var row of data) {
@@ -127,9 +134,10 @@ export const viz = looker.plugins.visualizations.add({
 
 
          document.head.appendChild(styleEl);
+
          element.innerHTML = `
          
-         <div class="headerdiv" style="height: 52px; font-style: normal; font-weight: 300; font-size: 16px;">
+         <div class="headerdiv" style=" font-style: normal; font-weight: 300; font-size: 16px;">
          ${config.top_label}
          <div style="font-size: 24px; font-weight: bolder;">${header}</div></div>
          <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 32}" stroke-width="${config.strokeWidth}"
