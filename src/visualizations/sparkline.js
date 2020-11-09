@@ -21,12 +21,18 @@ var sparkline_options = {
       
       var tooltip = svg.nextElementSibling;
       var date = (new Date(datapoint.date)).toUTCString().replace(/^.*?, (.*?) \d{2}:\d{2}:\d{2}.*?$/, "$1");
-  
+      var container = document.querySelector(".sparkline");
         
       tooltip.hidden = false;
       tooltip.textContent = `${date}: ${datapoint.html}`;
-      tooltip.style.top = `${event.offsetY + 35}px`;
-      tooltip.style.left = `${event.offsetX - 20}px`;
+      
+      
+      // tooltip.style.top = `${event.offsetY + 35}px`;
+      // tooltip.style.left = `${event.offsetX - 20}px`;
+      tooltip.style.top = `${container.clientHeight + 35}px`;
+      tooltip.style.left = `20px`;
+      
+      // tooltip.textContent = JSON.stringify(document.querySelector(".sparkline").clientHeight)
     },
   
     onmouseout() {
