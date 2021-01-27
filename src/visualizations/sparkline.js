@@ -130,7 +130,10 @@ export const viz = looker.plugins.visualizations.add({
     var headerRow = config.last ? data[data.length - 1] : data[0];
     var headerCell = headerRow[config.headerData];
     var header = rounder(LookerCharts.Utils.textForCell(headerCell), config.precision || 0);
-
+    if(isNaN(header)){
+      header = LookerCharts.Utils.textForCell(headerCell)
+    }
+    
     var dataArray = [];
     for (var row of data) {
       var measureCell = row[config.sparklineData];
