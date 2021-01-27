@@ -27,7 +27,7 @@ let webpackConfig = {
         ],
     },
     devServer: {
-        host: 'colin.looker.com',
+        host: 'localhost',
         headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': '*',
