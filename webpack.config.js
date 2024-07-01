@@ -4,7 +4,8 @@ let path = require('path');
 let webpackConfig = {
     mode: 'production',
     entry: {
-        sparkline: './src/visualizations/sparkline.js'
+        sparkline: './src/visualizations/sparkline.js',
+        sparkline_with_single_value: './src/visualizations/sparkline_with_single_value.js',
     },
     output: {
         filename: '[name].js',
@@ -18,12 +19,8 @@ let webpackConfig = {
     module: {
         rules: [
             { test: /\.ts$/, loader: 'ts-loader' },
-            { test: /\.css$/, loader: ['to-string-loader', 'css-loader'] },
-            { test: /\.(woff|woff2)$/,
-                use: {
-                    loader: 'url-loader',
-                },
-            }
+            { test: /\.css$/, loader: 'css-loader' },
+           
         ],
     },
     devServer: {
@@ -32,12 +29,10 @@ let webpackConfig = {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': '*',
         },
-        disableHostCheck: true,
         allowedHosts: ['.looker.com'],
-        contentBase: false,
         compress: true,
         port: 3443,
-        https: true
+        server: 'https'
     },
     devtool: 'eval',
     watch: true
