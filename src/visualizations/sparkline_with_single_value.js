@@ -77,11 +77,23 @@ export const viz = looker.plugins.visualizations.add({
       type: "boolean",
       label: "Use the last value?"
     },
+    headerFontSize: {
+      section: "Header",
+      type: "number",
+      label: "Header Font Size",
+      default: 32
+    },
+    comparisonFontSize: {
+      section: "Header",
+      type: "number",
+      label: "Comparison Font Size",
+      default: 18
+    },
     precision: {
       section: "Header",
       type: "number",
       label: "Decimal Precision",
-      default: 3
+      default: 2
     },
     units: {
       section: "Header",
@@ -199,8 +211,8 @@ export const viz = looker.plugins.visualizations.add({
          <div class="headerdiv" style=" font-style: normal; font-weight: 300; font-size: 16px;" onclick="${onClick()}"=>
          ${config.top_label}
          <div style="display: flex; align-items: center; gap: 15px;">
-          <div style="font-size: 32px; font-weight: bolder;">${header} ${config.units || ''}</div>
-          <div style="font-size: 18px; font-weight: bolder; color:${comparisonColor};">${comparison}%</div>
+          <div style="font-size: ${config.headerFontSize}px; font-weight: bolder;">${header} ${config.units || ''}</div>
+          <div style="font-size: ${config.comparisonFontSize}px; font-weight: bolder; color:${comparisonColor};">${comparison}%</div>
          </div>
           <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 32}" stroke-width="${config.strokeWidth}"
           stroke="${config.stroke}"  fill="${config.fill}">
