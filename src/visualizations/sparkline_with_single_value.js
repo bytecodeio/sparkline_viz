@@ -217,7 +217,6 @@ export const viz = looker.plugins.visualizations.add({
           <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 32}" stroke-width="${config.strokeWidth}"
           stroke="${config.stroke}"  fill="${config.fill}">
             
-        <rect width="100%" height="100%" fill="url(#gradientFill)"></rect>
     </svg>
           <span class="tooltip" style="position: absolute; 
             background: rgba(0, 0, 0, .7);
@@ -231,18 +230,17 @@ export const viz = looker.plugins.visualizations.add({
     sparkline(document.querySelector(".sparkline"), dataArray, sparkline_options);
     
     // Apply the gradient fill to the sparkline after it has been rendered
-  setTimeout(() => {
-      const sparklineSvg = document.querySelector(".sparkline");
-      let defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-      defs.innerHTML = `<linearGradient id="gradientFill" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stop-color="${config.fill}" />
-        <stop offset="100%" stop-color="white" stop-opacity="0" />`
-      sparklineSvg.appendChild(defs)
-      const paths = sparklineSvg.querySelectorAll('path, line');
-      paths.forEach(path => {
-          path.setAttribute('fill', 'url(#gradientFill)');
-      });
-  }, 10); // Adjust the timeout as necessary
+    setTimeout(() => {
+        const sparklineSvg = document.querySelector(".sparkline");
+        let defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        defs.innerHTML = `<linearGradient id="gradientFill" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="${config.fill}" />
+          <stop offset="100%" stop-color="white" stop-opacity="0" />`
+        sparklineSvg.appendChild(defs)
+        const fillPath = sparklineSvg.querySelector('.sparkline--fill');
+        fillPath.setAttribute('fill', 'url(#gradientFill)');
+        
+    }, 10); // Adjust the timeout as necessary
 
     doneRendering()
   }
