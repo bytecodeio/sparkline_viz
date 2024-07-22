@@ -206,6 +206,27 @@ export const viz = looker.plugins.visualizations.add({
     var onClick = () => window.alert('Popup Modal placeholder')
 
 
+// Constants
+const topLabelHeight = 38; // px, observed height of the top label
+
+// Function to estimate header height based on font size
+function estimateHeaderHeight(headerFontSize) {
+  // These observed values are based on the Montserrat font
+  const observedHeaderFontSize = 48; // px
+  const observedHeaderHeight = 65.71; // px
+  return (headerFontSize / observedHeaderFontSize) * observedHeaderHeight;
+}
+
+// Calculate dynamic SVG height
+function calculateSvgHeight(element, headerFontSize) {
+  const headerHeightEstimate = estimateHeaderHeight(headerFontSize);
+  const totalHeightAdjustment = headerHeightEstimate + topLabelHeight ;
+  return element.offsetHeight - totalHeightAdjustment;
+}
+
+// Example usage
+const svgHeight = calculateSvgHeight(element, config.headerFontSize);
+
     element.innerHTML = `
          
          <div class="headerdiv" style=" font-style: normal; font-weight: 300; font-size: 16px;" onclick="${onClick()}"=>
@@ -214,7 +235,7 @@ export const viz = looker.plugins.visualizations.add({
           <div style="font-size: ${config.headerFontSize}px; font-weight: bolder;">${header} ${config.units || ''}</div>
           <div style="font-size: ${config.comparisonFontSize}px; font-weight: bolder; color:${comparisonColor};">${comparison}%</div>
          </div>
-          <svg class="sparkline" width="${element.offsetWidth}" height="${element.offsetHeight - 32}" stroke-width="${config.strokeWidth}"
+          <svg class="sparkline" width="${element.offsetWidth}" height="${svgHeight}" stroke-width="${config.strokeWidth}"
           stroke="${config.stroke}"  fill="${config.fill}">
             
     </svg>
@@ -233,7 +254,7 @@ export const viz = looker.plugins.visualizations.add({
     setTimeout(() => {
         const sparklineSvg = document.querySelector(".sparkline");
         let defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-        defs.innerHTML = `<linearGradient id="gradientFill" x1="0%" y1="0%" x2="0%" y2="100%">
+        defs.innerHTML = `<linearGradient id="gradientFill" x1="20%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%" stop-color="${config.fill}" />
           <stop offset="100%" stop-color="white" stop-opacity="0" />`
         sparklineSvg.appendChild(defs)
