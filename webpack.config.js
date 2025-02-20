@@ -6,6 +6,7 @@ let webpackConfig = {
     entry: {
         sparkline: './src/visualizations/sparkline.js',
         sparkline_with_single_value: './src/visualizations/sparkline_with_single_value.js',
+        single_value: './src/visualizations/single_value.js',
     },
     output: {
         filename: '[name].js',
