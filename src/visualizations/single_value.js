@@ -34,15 +34,16 @@ const formatLargeNumber = (value, isCurrency) => {
 };
 
 const sharedStyles = `
-
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+#vis {
+  margin: 0 !important;
+}
 .headerdiv {
   font-family: 'Inter', sans-serif;
   font-style: normal;
   font-weight: 300;
   font-size: 16px;
-  margin-bottom: 20px;
 }
 .large-number {
   font-family: 'Inter', sans-serif;
@@ -57,26 +58,30 @@ const sharedStyles = `
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 20px;
 }
 .comparison-box {
   font-family: 'Inter', sans-serif;
   background: white;
   border-radius: 3px;
   padding: 5px 10px;
-  display: inline;
+  display: inline-block;
   border: 1px solid white;
+  align-self: flex-start;
+}
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.flex-item {
+  margin: 10px 0;
 }
 </style>
-<div class="headerdiv"></div>
-<div class="large-number">0</div>
-<div class="small-number">0</div>
-<div class="comparison-box" style="font-size: 18px; font-weight: bolder; background-color: white;">0%</div>
 `;
 
 export const viz = looker.plugins.visualizations.add({
   options: {
-    
     top_label: {
       section: "Header",
       type: "string",
@@ -131,20 +136,57 @@ export const viz = looker.plugins.visualizations.add({
       label: "Negative Comparison Color",
       default: "#d9534f" // default negative color
     },
+    largeNumberFontSize: {
+      section: "Font Sizes",
+      type: "number",
+      label: "Large Number Font Size",
+      default: 36
+    },
+    smallNumberFontSize: {
+      section: "Font Sizes",
+      type: "number",
+      label: "Small Number Font Size",
+      default: 16
+    },
+    comparisonFontSize: {
+      section: "Font Sizes",
+      type: "number",
+      label: "Comparison Font Size",
+      default: 18
+    },
+    smallLargeNumberFontSize: {
+      section: "Font Sizes",
+      type: "number",
+      label: "Small Large Number Font Size",
+      default: 16
+    },
+    smallSmallNumberFontSize: {
+      section: "Font Sizes",
+      type: "number",
+      label: "Small Small Number Font Size",
+      default: 12
+    },
+    smallComparisonFontSize: {
+      section: "Font Sizes",
+      type: "number",
+      label: "Small Comparison Font Size",
+      default: 12
+    },
   },
   create: function (element, config) {
     element.innerHTML = sharedStyles;
-
-    // Listen to resize events
-    window.addEventListener('resize', () => {
-      this.updateAsync(this.data, element, config, this.queryResponse, this.details, this.doneRendering);
-    });
+    element.style.margin = '0';
+    element.style.padding = '0';
   },
   updateAsync: function (data, element, config, queryResponse, details, doneRendering) {
     this.data = data;
     this.queryResponse = queryResponse;
     this.details = details;
     this.doneRendering = doneRendering;
+    // Listen to resize events
+    window.addEventListener('resize', () => {
+      this.updateAsync(this.data, element, config, this.queryResponse, this.details, this.doneRendering);
+    });
 
     let values = queryResponse.fields.measure_like.map((field) => {
       let key = field.label
@@ -224,22 +266,7 @@ export const viz = looker.plugins.visualizations.add({
         element.style.fontSize = fontSize + 'px';
       }
     }
-
-    var dataArray = [];
-
-    //  Montserrat:
-    //  https://fonts.gstatic.com/s/montserrat/v14/JTUSjIg1_i6t8kCHKm459Wlhyw.woff2);}\'+
-
-    var styleEl = document.createElement('style');
-    styleEl.setAttribute('type', "text/css")
-    styleEl.innerHTML = '@font-face ' +
-      '{font-family: Open Sans;' +
-      'src: url( https://fonts.gstatic.com/s/opensans/v17/mem8YaGs126MiZpBA-UFVZ0b.woff2 );}' +
-      'div {font-family: Open Sans;};'
-
-
-    document.head.appendChild(styleEl);
-  
+ 
 
 
 // Constants
@@ -254,13 +281,14 @@ function estimateHeaderHeight(headerFontSize) {
 }
 
     element.innerHTML = `
-      <div style="background-color: ${backgroundColor}; border-radius: 10px; padding: 10px; margin-left: 20px;">
-        <div class="headerdiv" style=" font-style: normal; font-weight: 300; margin-bottom: 20px; font-size: 16px;">${config.top_label}</div>
-        <div class="large-number" style="font-size: 36px;">${largeHeader} ${config.units || ''}</div>
-        <div class="small-number">${header} ${config.units || ''}</div>
-        <div class="comparison-box ${comparisonClass}" style="font-size: ${config.comparisonFontSize}px; font-weight: bolder; color:${comparisonColor}; background: white; display: inline; border-radius: 3px; padding: 5px 10px; margin-top: 20px;">${arrow} ${comparison}%</div>
-        <div class="bottomPadding" style="margin-bottom: 15px"> </div>
+      <div class="flex-container" style="background-color: ${backgroundColor}; border-radius: 10px; padding: 20px; ">
+        <div class="headerdiv flex-item" style=" font-style: normal; font-weight: 300; font-size: 16px;">${config.top_label}</div>
+        <div class="middle_flexbox_div flex-item">
+          <div class="large-number" style="font-size: 36px;">${largeHeader} ${config.units || ''}</div>
+          <div class="small-number">${header} ${config.units || ''}</div>
         </div>
+        <div class="comparison-box flex-item" style="font-size: ${config.comparisonFontSize}px; font-weight: bolder; color:${comparisonColor}; background: white; display: inline-block; border-radius: 3px; padding: 5px 10px; align-self: flex-start;">${arrow} ${comparison}%</div>
+      </div>
     `;
 
     // Ensure the Inter font is loaded
@@ -282,14 +310,13 @@ function estimateHeaderHeight(headerFontSize) {
     
     // Shrink font sizes if element width is less than 200px
     if (element.offsetWidth < 200) {
-      adjustFontSize(largeNumberElement, 16);
-    adjustFontSize(smallNumberElement, 12);
-    adjustFontSize(comparisonBoxElement, 12);
-
+      adjustFontSize(largeNumberElement, config.smallLargeNumberFontSize);
+      adjustFontSize(smallNumberElement, config.smallSmallNumberFontSize);
+      adjustFontSize(comparisonBoxElement, config.smallComparisonFontSize);
     } else {
-      adjustFontSize(largeNumberElement, 36);
-      adjustFontSize(smallNumberElement, 16);
-      adjustFontSize(comparisonBoxElement, 18);
+      adjustFontSize(largeNumberElement, config.largeNumberFontSize);
+      adjustFontSize(smallNumberElement, config.smallNumberFontSize);
+      adjustFontSize(comparisonBoxElement, config.comparisonFontSize);
     }
 
     doneRendering()
